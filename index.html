@@ -13,7 +13,7 @@
       content="CalWAM, WAM calculator, UniMelb WAM calculator, University of Melbourne WAM calculator, subject mark calculator, assessment calculator, projected WAM"
     />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://example.com/wam-calculator" />
+    <link rel="canonical" href="https://calwam.vercel.app" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
     <meta property="og:type" content="website" />
@@ -26,7 +26,7 @@
       content="CalWAM is a simple WAM calculator for students to plan subject marks, target marks, remaining assessment scores, and projected WAM."
     />
     <meta property="og:image" content="https://calwam.vercel.app/favicon.png" />
-    <meta property="og:url" content="https://example.com/wam-calculator" />
+    <meta property="og:url" content="https://calwam.vercel.app" />
     <style>
       :root {
         color: #172026;
@@ -271,15 +271,7 @@
         white-space: nowrap;
       }
 
-      .data-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 7px;
-        justify-content: flex-end;
-      }
-
-      .is-hidden,
-      .import-input {
+      .is-hidden {
         display: none !important;
       }
 
@@ -567,10 +559,6 @@
           align-items: start;
         }
 
-        .data-actions {
-          justify-content: flex-start;
-        }
-
         .primary-button,
         .secondary-button,
         .danger-button {
@@ -614,15 +602,6 @@
           <div>
             <p class="eyebrow">WAM overview</p>
             <h2>Projected WAM</h2>
-          </div>
-          <div class="data-actions">
-            <button class="secondary-button" type="button" id="exportData">
-              Export data
-            </button>
-            <button class="secondary-button" type="button" id="importData">
-              Import data
-            </button>
-            <input class="import-input" id="importFile" type="file" accept="application/json,.json" />
           </div>
         </div>
 
@@ -791,9 +770,6 @@
         wamChangeCard: document.getElementById("wamChangeCard"),
         wamChange: document.getElementById("wamChange"),
         wamSubjectList: document.getElementById("wamSubjectList"),
-        exportData: document.getElementById("exportData"),
-        importData: document.getElementById("importData"),
-        importFile: document.getElementById("importFile"),
         resetButton: document.getElementById("resetButton"),
         addSubject: document.getElementById("addSubject"),
         subjectsTrack: document.getElementById("subjectsTrack"),
@@ -836,12 +812,6 @@
         state.wam.useCreditWeighting = event.target.checked;
         saveAndRender();
       });
-
-      elements.exportData.addEventListener("click", exportData);
-      elements.importData.addEventListener("click", () => {
-        elements.importFile.click();
-      });
-      elements.importFile.addEventListener("change", importData);
 
       render();
 
@@ -1322,43 +1292,6 @@
           left: elements.subjectsTrack.scrollWidth,
           behavior: "smooth",
         });
-      }
-
-      function exportData() {
-        const payload = JSON.stringify(state, null, 2);
-        const blob = new Blob([payload], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `wam-calculator-${new Date()
-          .toISOString()
-          .slice(0, 10)}.json`;
-        document.body.append(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
-      }
-
-      function importData(event) {
-        const file = event.target.files?.[0];
-
-        if (!file) {
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.addEventListener("load", () => {
-          try {
-            const importedState = JSON.parse(String(reader.result));
-            state = normalizeState(importedState);
-            saveAndRender();
-          } catch {
-            window.alert("Could not import that JSON file.");
-          } finally {
-            elements.importFile.value = "";
-          }
-        });
-        reader.readAsText(file);
       }
 
       function calculateWam() {
