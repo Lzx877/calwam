@@ -1,0 +1,1750 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CalWAM | WAM Calculator and Subject Mark Planner</title>
+    <meta
+      name="description"
+      content="CalWAM is a simple WAM calculator for students to plan subject marks, target marks, remaining assessment scores, and projected WAM."
+    />
+    <meta
+      name="keywords"
+      content="CalWAM, WAM calculator, UniMelb WAM calculator, University of Melbourne WAM calculator, subject mark calculator, assessment calculator, projected WAM"
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://example.com/wam-calculator" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="CalWAM | WAM Calculator and Subject Mark Planner"
+    />
+    <meta
+      property="og:description"
+      content="CalWAM is a simple WAM calculator for students to plan subject marks, target marks, remaining assessment scores, and projected WAM."
+    />
+    <meta property="og:url" content="https://example.com/wam-calculator" />
+    <style>
+      :root {
+        color: #172026;
+        background: #f6f8fb;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .app-shell {
+        width: min(1380px, calc(100% - 24px));
+        margin: 0 auto;
+        padding: 12px 0 26px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
+        align-items: center;
+        padding: 12px 14px;
+        border: 1px solid #dfe5ec;
+        border-radius: 5px;
+        background: #f5fbf8;
+      }
+
+      .eyebrow {
+        margin: 0 0 4px;
+        color: #277366;
+        font-size: 0.66rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        margin-bottom: 2px;
+        color: #111b22;
+        font-size: clamp(2rem, 3vw, 3.1rem);
+        line-height: 1;
+      }
+
+      h2 {
+        margin-bottom: 0;
+        font-size: 1.05rem;
+        line-height: 1.15;
+      }
+
+      h3 {
+        margin: 0;
+        font-size: 0.92rem;
+      }
+
+      .hero-copy {
+        max-width: 620px;
+        margin-bottom: 0;
+        color: #5c6a73;
+        font-size: 0.86rem;
+        line-height: 1.35;
+      }
+
+      .panel,
+      .subject-card,
+      .metric-card,
+      .assessment-row {
+        border: 1px solid #dfe5ec;
+        border-radius: 5px;
+        background: #ffffff;
+      }
+
+      .panel {
+        margin-top: 10px;
+        padding: 12px;
+      }
+
+      .section-heading {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 9px;
+      }
+
+      .field span,
+      .metric-card span,
+      .assessment-label,
+      .status-label {
+        display: block;
+        color: #6f7c86;
+        font-size: 0.63rem;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+        line-height: 1.15;
+        text-transform: uppercase;
+        white-space: normal;
+      }
+
+      .field input {
+        width: 100%;
+        min-height: 34px;
+        margin-top: 4px;
+        border: 1px solid #dfe5ec;
+        border-radius: 5px;
+        background: #ffffff;
+        color: #15232d;
+        padding: 0 10px;
+      }
+
+      .field input:focus {
+        border-color: #277366;
+        outline: 2px solid rgb(39 115 102 / 14%);
+      }
+
+      .wam-controls {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 220px));
+        gap: 8px;
+        margin-bottom: 9px;
+      }
+
+      .mode-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        margin: 0 0 9px;
+        color: #687783;
+        font-size: 0.76rem;
+      }
+
+      .toggle {
+        display: inline-flex;
+        gap: 7px;
+        align-items: center;
+        color: #263946;
+        font-weight: 800;
+      }
+
+      .toggle input {
+        width: 18px;
+        height: 18px;
+        accent-color: #176f63;
+      }
+
+      .wam-metrics,
+      .subject-metrics {
+        display: grid;
+        gap: 8px;
+      }
+
+      .wam-metrics {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+
+      .subject-metrics {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .metric-card {
+        min-height: 66px;
+        padding: 9px;
+      }
+
+      .metric-card strong {
+        display: block;
+        margin-top: 6px;
+        color: #111f28;
+        font-size: 1.18rem;
+        line-height: 1;
+      }
+
+      .metric-card p {
+        margin: 4px 0 0;
+        color: #687783;
+        font-size: 0.7rem;
+        line-height: 1.2;
+      }
+
+      .metric-card.strong {
+        border-color: #cbded9;
+        background: #f5fbf8;
+      }
+
+      .metric-card.change-positive strong {
+        color: #176f63;
+      }
+
+      .metric-card.change-negative strong {
+        color: #b55316;
+      }
+
+      .contribution-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 6px;
+        margin-top: 9px;
+      }
+
+      .wam-subject-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+        min-height: 32px;
+        border: 1px solid #e4e9ef;
+        border-radius: 5px;
+        background: #fbfcfd;
+        padding: 6px 8px;
+        color: #263946;
+        font-size: 0.8rem;
+      }
+
+      .wam-subject-row strong {
+        white-space: nowrap;
+      }
+
+      .data-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        justify-content: flex-end;
+      }
+
+      .is-hidden,
+      .import-input {
+        display: none !important;
+      }
+
+      .primary-button,
+      .secondary-button,
+      .danger-button,
+      .icon-button,
+      .chip {
+        min-height: 34px;
+        border-radius: 5px;
+        font-weight: 800;
+        transition:
+          transform 160ms ease,
+          border-color 160ms ease,
+          background 160ms ease;
+      }
+
+      .primary-button,
+      .secondary-button,
+      .danger-button {
+        border: 1px solid transparent;
+        padding: 0 13px;
+      }
+
+      .primary-button {
+        background: #277366;
+        color: #ffffff;
+      }
+
+      .secondary-button {
+        border-color: #d2d9e2;
+        background: #ffffff;
+        color: #223541;
+      }
+
+      .danger-button {
+        border-color: #edb696;
+        background: #fff7f2;
+        color: #a64012;
+      }
+
+      .icon-button {
+        width: 34px;
+        border: 1px solid #edb696;
+        background: #fff7f2;
+        color: #a64012;
+        padding: 0;
+      }
+
+      .primary-button:hover,
+      .secondary-button:hover,
+      .danger-button:hover,
+      .icon-button:hover,
+      .chip:hover {
+        transform: translateY(-1px);
+      }
+
+      .subjects-panel {
+        padding-right: 0;
+      }
+
+      .subjects-track {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 1px 12px 7px 0;
+        scroll-snap-type: x proximity;
+      }
+
+      .subjects-track:empty::before {
+        content: "Add a subject to start planning.";
+        display: block;
+        width: 100%;
+        border: 1px dashed #bcc9d5;
+        border-radius: 5px;
+        background: #ffffff;
+        color: #687783;
+        padding: 20px;
+      }
+
+      .subject-card {
+        flex: 0 0 min(700px, calc(100vw - 44px));
+        display: grid;
+        gap: 9px;
+        padding: 10px;
+        scroll-snap-align: start;
+      }
+
+      .subject-header {
+        display: grid;
+        grid-template-columns: minmax(180px, 1fr) auto;
+        gap: 8px;
+        align-items: end;
+      }
+
+      .subject-actions,
+      .action-row,
+      .preset-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .target-row {
+        display: grid;
+        grid-template-columns: minmax(120px, 170px) minmax(0, 1fr);
+        gap: 8px;
+        align-items: end;
+      }
+
+      .subject-card.weighted-mode .target-row {
+        grid-template-columns:
+          minmax(120px, 170px) minmax(120px, 170px)
+          minmax(0, 1fr);
+      }
+
+      .preset-row {
+        align-items: end;
+      }
+
+      .chip {
+        min-width: 44px;
+        border: 1px solid #d2d9e2;
+        background: #ffffff;
+        color: #263946;
+        padding: 0 10px;
+      }
+
+      .chip.active,
+      .chip:hover {
+        border-color: #277366;
+        background: #277366;
+        color: #ffffff;
+      }
+
+      .subject-status {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        gap: 6px;
+      }
+
+      .status-box {
+        min-height: 54px;
+        border: 1px solid #dfe5ec;
+        border-radius: 5px;
+        background: #fbfcfd;
+        padding: 8px;
+      }
+
+      .status-box strong {
+        display: block;
+        margin-top: 4px;
+        color: #12202a;
+        font-size: 1rem;
+      }
+
+      .status-box p {
+        margin: 3px 0 0;
+        color: #687783;
+        font-size: 0.7rem;
+        line-height: 1.2;
+      }
+
+      .warning-text {
+        color: #b55316 !important;
+      }
+
+      .assessment-toolbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .assessment-list {
+        display: grid;
+        gap: 6px;
+      }
+
+      .assessment-row {
+        display: grid;
+        grid-template-columns:
+          minmax(130px, 1.45fr) 72px 72px 78px minmax(86px, 0.8fr)
+          120px 34px;
+        gap: 6px;
+        align-items: end;
+        padding: 8px;
+      }
+
+      .assessment-row .field input {
+        min-height: 34px;
+        padding: 0 8px;
+      }
+
+      .completed-toggle {
+        display: inline-flex;
+        gap: 6px;
+        align-items: center;
+        justify-content: center;
+        min-height: 34px;
+        border: 1px solid #dfe5ec;
+        border-radius: 5px;
+        background: #ffffff;
+        color: #263946;
+        font-size: 0.8rem;
+        font-weight: 800;
+      }
+
+      .completed-toggle input {
+        width: 16px;
+        height: 16px;
+        accent-color: #176f63;
+      }
+
+      .contribution-pill {
+        min-width: 120px;
+        min-height: 34px;
+        border: 1px solid #dfe5ec;
+        border-radius: 5px;
+        background: #fbfcfd;
+        padding: 6px 8px;
+        overflow-wrap: anywhere;
+      }
+
+      .contribution-pill .assessment-label {
+        font-size: 0.62rem;
+        line-height: 1.1;
+      }
+
+      .contribution-pill strong {
+        display: block;
+        margin-top: 3px;
+        color: #12202a;
+        font-size: 0.95rem;
+      }
+
+      .footer {
+        margin-top: 20px;
+        color: #7b8994;
+        font-size: 0.82rem;
+        text-align: center;
+      }
+
+      @media (max-width: 1120px) {
+        .wam-metrics {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .subject-metrics {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 760px) {
+        .hero,
+        .section-heading,
+        .subject-header,
+        .target-row,
+        .subject-card.weighted-mode .target-row,
+        .subject-status {
+          grid-template-columns: 1fr;
+        }
+
+        .wam-controls,
+        .wam-metrics,
+        .subject-metrics {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .assessment-row {
+          grid-template-columns: 1fr;
+        }
+
+        .subject-card {
+          flex-basis: calc(100vw - 34px);
+        }
+
+        .icon-button {
+          width: 100%;
+          min-height: 40px;
+        }
+
+        .section-heading {
+          display: grid;
+          align-items: start;
+        }
+
+        .data-actions {
+          justify-content: flex-start;
+        }
+
+        .primary-button,
+        .secondary-button,
+        .danger-button {
+          min-height: 40px;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .app-shell {
+          width: min(100% - 16px, 1380px);
+          padding-top: 10px;
+        }
+
+        .hero,
+        .panel,
+        .subject-card {
+          padding: 10px;
+        }
+
+        .wam-controls,
+        .wam-metrics,
+        .subject-metrics {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero">
+        <div>
+          <h1>CalWAM</h1>
+          <p class="hero-copy">
+            A simple WAM calculator and subject mark planner.
+          </p>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="WAM overview">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">WAM overview</p>
+            <h2>Projected WAM</h2>
+          </div>
+          <div class="data-actions">
+            <button class="secondary-button" type="button" id="exportData">
+              Export data
+            </button>
+            <button class="secondary-button" type="button" id="importData">
+              Import data
+            </button>
+            <input class="import-input" id="importFile" type="file" accept="application/json,.json" />
+          </div>
+        </div>
+
+        <div class="mode-row">
+          <label class="toggle">
+            <input id="useCreditWeighting" type="checkbox" />
+            Use credit point weighting
+          </label>
+          <span>Simple average mode is used by default.</span>
+        </div>
+
+        <div class="wam-controls">
+          <label class="field">
+            <span>Current WAM</span>
+            <input id="currentWam" min="0" max="100" type="number" />
+          </label>
+          <label class="field simple-only">
+            <span>Completed subjects</span>
+            <input id="completedSubjects" min="0" type="number" />
+          </label>
+          <label class="field weighted-only is-hidden">
+            <span>Completed credit points</span>
+            <input id="completedCreditPoints" min="0" type="number" />
+          </label>
+        </div>
+
+        <div class="wam-metrics">
+          <article class="metric-card">
+            <span>Current WAM</span>
+            <strong id="wamCurrent">0</strong>
+          </article>
+          <article class="metric-card">
+            <span id="wamCompletedLabel">Completed subjects</span>
+            <strong id="wamCompletedSubjects">0</strong>
+          </article>
+          <article class="metric-card">
+            <span>New subjects</span>
+            <strong id="wamNewSubjects">0</strong>
+          </article>
+          <article class="metric-card">
+            <span>Avg target mark</span>
+            <strong id="wamAverageNew">0</strong>
+          </article>
+          <article class="metric-card strong">
+            <span>Projected WAM</span>
+            <strong id="wamProjected">0</strong>
+          </article>
+          <article class="metric-card" id="wamChangeCard">
+            <span>WAM change</span>
+            <strong id="wamChange">0</strong>
+          </article>
+        </div>
+
+        <div class="contribution-list" id="wamSubjectList"></div>
+      </section>
+
+      <section class="panel subjects-panel" aria-label="Subjects">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Subjects</p>
+            <h2>Assessment calculators</h2>
+          </div>
+          <div class="action-row">
+            <button class="secondary-button" type="button" id="resetButton">
+              Reset examples
+            </button>
+            <button class="primary-button" type="button" id="addSubject">
+              Add subject
+            </button>
+          </div>
+        </div>
+
+        <div class="subjects-track" id="subjectsTrack"></div>
+      </section>
+
+      <footer class="footer">Made for students — CalWAM</footer>
+    </main>
+
+    <script>
+      const STORAGE_KEY = "unimelb-wam-planner:v2";
+      const LEGACY_STORAGE_KEY = "unimelb-mark-planner:v1";
+      const targetPresets = [50, 65, 70, 80];
+
+      const defaultAssessments = [
+        {
+          id: "assignment-1",
+          name: "Assignment 1",
+          weight: 20,
+          score: 72,
+          maxScore: 100,
+          completed: true,
+        },
+        {
+          id: "assignment-2",
+          name: "Assignment 2",
+          weight: 30,
+          score: 0,
+          maxScore: 100,
+          completed: false,
+        },
+        {
+          id: "final-exam",
+          name: "Final Exam",
+          weight: 50,
+          score: 0,
+          maxScore: 100,
+          completed: false,
+        },
+      ];
+
+      const defaultSubjects = [
+        {
+          id: "subject-1",
+          name: "MGMT30006",
+          targetMark: 80,
+          creditPoints: 12.5,
+          assessments: cloneAssessments(defaultAssessments),
+        },
+        {
+          id: "subject-2",
+          name: "Subject 2",
+          targetMark: 75,
+          creditPoints: 12.5,
+          assessments: [
+            {
+              id: "subject-2-quiz",
+              name: "Quiz",
+              weight: 20,
+              score: 15,
+              maxScore: 20,
+              completed: true,
+            },
+            {
+              id: "subject-2-project",
+              name: "Project",
+              weight: 30,
+              score: 0,
+              maxScore: 100,
+              completed: false,
+            },
+            {
+              id: "subject-2-exam",
+              name: "Final Exam",
+              weight: 50,
+              score: 0,
+              maxScore: 100,
+              completed: false,
+            },
+          ],
+        },
+      ];
+
+      let state = loadState();
+
+      const elements = {
+        currentWam: document.getElementById("currentWam"),
+        completedSubjects: document.getElementById("completedSubjects"),
+        completedCreditPoints: document.getElementById("completedCreditPoints"),
+        useCreditWeighting: document.getElementById("useCreditWeighting"),
+        wamCurrent: document.getElementById("wamCurrent"),
+        wamCompletedLabel: document.getElementById("wamCompletedLabel"),
+        wamCompletedSubjects: document.getElementById("wamCompletedSubjects"),
+        wamNewSubjects: document.getElementById("wamNewSubjects"),
+        wamAverageNew: document.getElementById("wamAverageNew"),
+        wamProjected: document.getElementById("wamProjected"),
+        wamChangeCard: document.getElementById("wamChangeCard"),
+        wamChange: document.getElementById("wamChange"),
+        wamSubjectList: document.getElementById("wamSubjectList"),
+        exportData: document.getElementById("exportData"),
+        importData: document.getElementById("importData"),
+        importFile: document.getElementById("importFile"),
+        resetButton: document.getElementById("resetButton"),
+        addSubject: document.getElementById("addSubject"),
+        subjectsTrack: document.getElementById("subjectsTrack"),
+      };
+
+      elements.addSubject.addEventListener("click", addSubject);
+
+      elements.resetButton.addEventListener("click", () => {
+        const confirmed = window.confirm(
+          "Are you sure you want to reset all example data? This will replace your current saved subjects.",
+        );
+
+        if (!confirmed) {
+          return;
+        }
+
+        state = createDefaultState();
+        saveAndRender();
+      });
+
+      elements.currentWam.addEventListener("input", (event) => {
+        state.wam.currentWam = numberFromInput(event.target.value);
+        saveState();
+        renderWamOverview();
+      });
+
+      elements.completedSubjects.addEventListener("input", (event) => {
+        state.wam.completedSubjects = numberFromInput(event.target.value);
+        saveState();
+        renderWamOverview();
+      });
+
+      elements.completedCreditPoints.addEventListener("input", (event) => {
+        state.wam.completedCreditPoints = numberFromInput(event.target.value);
+        saveState();
+        renderWamOverview();
+      });
+
+      elements.useCreditWeighting.addEventListener("change", (event) => {
+        state.wam.useCreditWeighting = event.target.checked;
+        saveAndRender();
+      });
+
+      elements.exportData.addEventListener("click", exportData);
+      elements.importData.addEventListener("click", () => {
+        elements.importFile.click();
+      });
+      elements.importFile.addEventListener("change", importData);
+
+      render();
+
+      function render() {
+        elements.currentWam.value = state.wam.currentWam;
+        elements.completedSubjects.value = state.wam.completedSubjects;
+        elements.completedCreditPoints.value = state.wam.completedCreditPoints;
+        elements.useCreditWeighting.checked = state.wam.useCreditWeighting;
+        renderSubjects();
+        renderWamOverview();
+      }
+
+      function renderWamOverview() {
+        const totals = calculateWam();
+        const isWeighted = Boolean(state.wam.useCreditWeighting);
+
+        renderWeightedVisibility();
+
+        elements.wamCurrent.textContent = formatWam(totals.currentWam);
+        elements.wamCompletedLabel.textContent = isWeighted
+          ? "Completed credit pts"
+          : "Completed subjects";
+        elements.wamCompletedSubjects.textContent = formatMark(
+          totals.completedBase,
+        );
+        elements.wamNewSubjects.textContent = String(totals.newSubjectCount);
+        elements.wamAverageNew.textContent = formatWam(totals.averageNewMark);
+        elements.wamProjected.textContent = formatWam(totals.newWam);
+        elements.wamChange.textContent = formatSignedWam(totals.wamChange);
+        elements.wamChangeCard.classList.toggle(
+          "change-positive",
+          totals.wamChange > 0,
+        );
+        elements.wamChangeCard.classList.toggle(
+          "change-negative",
+          totals.wamChange < 0,
+        );
+
+        elements.wamSubjectList.replaceChildren();
+        state.subjects.forEach((subject) => {
+          const row = document.createElement("div");
+          row.className = "wam-subject-row";
+          row.innerHTML = `
+            <span></span>
+            <strong>${formatMark(numericValue(subject.targetMark))}${
+              isWeighted ? ` | ${formatMark(numericValue(subject.creditPoints))} cp` : ""
+            }</strong>
+          `;
+          row.querySelector("span").textContent = subject.name || "Untitled subject";
+          elements.wamSubjectList.append(row);
+        });
+      }
+
+      function renderSubjects() {
+        elements.subjectsTrack.replaceChildren();
+
+        state.subjects.forEach((subject) => {
+          const totals = calculateSubjectTotals(subject);
+          const card = document.createElement("article");
+          card.className = state.wam.useCreditWeighting
+            ? "subject-card weighted-mode"
+            : "subject-card";
+          card.dataset.subjectId = subject.id;
+          card.innerHTML = `
+            <div class="subject-header">
+              <label class="field">
+                <span>Subject name</span>
+                <input class="js-subject-name" type="text" />
+              </label>
+              <div class="subject-actions">
+                <button class="secondary-button js-duplicate-subject" type="button">
+                  Duplicate
+                </button>
+                <button class="danger-button js-delete-subject" type="button">
+                  Delete
+                </button>
+              </div>
+            </div>
+
+            <div class="target-row">
+              <label class="field">
+                <span>Target mark</span>
+                <input class="js-target-mark" min="0" max="100" type="number" />
+              </label>
+              <label class="field weighted-only is-hidden">
+                <span>Credit points</span>
+                <input class="js-credit-points" min="0" type="number" />
+              </label>
+              <div class="preset-row js-target-presets" aria-label="Target mark presets"></div>
+            </div>
+
+            <div class="subject-metrics">
+              <article class="metric-card">
+                <span>Current mark</span>
+                <strong class="js-current-mark">${formatMark(totals.currentMark)}%</strong>
+                <p class="js-completed-weight">${formatMark(
+                  totals.completedWeight,
+                )}% done</p>
+              </article>
+              <article class="metric-card">
+                <span>Contribution</span>
+                <strong class="js-completed-contribution">${formatMark(
+                  totals.completedMark,
+                )}</strong>
+                <p>banked marks</p>
+              </article>
+              <article class="metric-card strong">
+                <span>Projected final mark</span>
+                <strong class="js-final-mark">${formatMark(totals.finalMark)}%</strong>
+                <p>entered scores</p>
+              </article>
+              <article class="metric-card">
+                <span>Required average</span>
+                <strong class="js-required-average">${requiredAverageLabel(
+                  totals.required,
+                )}</strong>
+                <p class="js-required-message">${totals.required.message}</p>
+              </article>
+            </div>
+
+            <div class="subject-status">
+              <div class="status-box">
+                <span class="status-label">Total weight</span>
+                <strong class="js-total-weight">${formatMark(totals.totalWeight)}%</strong>
+                <p class="js-weight-message"></p>
+              </div>
+              <div class="status-box">
+                <span class="status-label">Remaining weight</span>
+                <strong class="js-remaining-weight">${formatMark(
+                  totals.remainingWeight,
+                )}%</strong>
+                <p>unchecked assessment weight</p>
+              </div>
+            </div>
+
+            <div class="assessment-toolbar">
+              <h3>Assessments</h3>
+              <button class="secondary-button js-add-item" type="button">Add item</button>
+            </div>
+
+            <div class="assessment-list js-assessment-list"></div>
+          `;
+
+          elements.subjectsTrack.append(card);
+          wireSubjectCard(card, subject);
+          renderSubjectTargetPresets(card, subject);
+          renderAssessmentRows(card, subject);
+          renderSubjectSummary(subject.id);
+        });
+
+        renderWeightedVisibility();
+      }
+
+      function renderWeightedVisibility() {
+        const isWeighted = Boolean(state.wam.useCreditWeighting);
+
+        document.querySelectorAll(".weighted-only").forEach((element) => {
+          element.classList.toggle("is-hidden", !isWeighted);
+        });
+        document.querySelectorAll(".simple-only").forEach((element) => {
+          element.classList.toggle("is-hidden", isWeighted);
+        });
+        document.querySelectorAll(".subject-card").forEach((card) => {
+          card.classList.toggle("weighted-mode", isWeighted);
+        });
+      }
+
+      function wireSubjectCard(card, subject) {
+        const subjectName = card.querySelector(".js-subject-name");
+        const targetMark = card.querySelector(".js-target-mark");
+        const creditPoints = card.querySelector(".js-credit-points");
+        const duplicateButton = card.querySelector(".js-duplicate-subject");
+        const deleteButton = card.querySelector(".js-delete-subject");
+        const addItemButton = card.querySelector(".js-add-item");
+
+        subjectName.value = subject.name;
+        targetMark.value = subject.targetMark;
+        creditPoints.value = subject.creditPoints;
+        duplicateButton.setAttribute("aria-label", `Duplicate ${subject.name}`);
+        deleteButton.setAttribute("aria-label", `Delete ${subject.name}`);
+
+        subjectName.addEventListener("input", (event) => {
+          updateSubject(subject.id, { name: event.target.value });
+        });
+
+        targetMark.addEventListener("input", (event) => {
+          updateSubject(subject.id, {
+            targetMark: numberFromInput(event.target.value),
+          });
+        });
+
+        creditPoints.addEventListener("input", (event) => {
+          updateSubject(subject.id, {
+            creditPoints: numberFromInput(event.target.value),
+          });
+        });
+
+        duplicateButton.addEventListener("click", () => {
+          duplicateSubject(subject.id);
+        });
+
+        deleteButton.addEventListener("click", () => {
+          state.subjects = state.subjects.filter((item) => item.id !== subject.id);
+          saveAndRender();
+        });
+
+        addItemButton.addEventListener("click", () => {
+          const currentSubject = findSubject(subject.id);
+
+          if (!currentSubject) {
+            return;
+          }
+
+          currentSubject.assessments.push({
+            id: createId(),
+            name: `Assessment ${currentSubject.assessments.length + 1}`,
+            weight: 10,
+            score: 0,
+            maxScore: 100,
+            completed: false,
+          });
+          saveAndRender();
+        });
+      }
+
+      function renderSubjectTargetPresets(card, subject) {
+        const presetContainer = card.querySelector(".js-target-presets");
+        presetContainer.replaceChildren();
+
+        targetPresets.forEach((preset) => {
+          const button = document.createElement("button");
+          button.className = preset === subject.targetMark ? "chip active" : "chip";
+          button.type = "button";
+          button.textContent = preset;
+          button.addEventListener("click", () => {
+            updateSubject(subject.id, { targetMark: preset });
+            const targetInput = card.querySelector(".js-target-mark");
+            targetInput.value = preset;
+          });
+          presetContainer.append(button);
+        });
+      }
+
+      function renderAssessmentRows(card, subject) {
+        const list = card.querySelector(".js-assessment-list");
+        list.replaceChildren();
+
+        subject.assessments.forEach((item) => {
+          const row = document.createElement("div");
+          row.className = "assessment-row";
+          row.dataset.assessmentId = item.id;
+          row.innerHTML = `
+            <label class="field">
+              <span>Item</span>
+              <input class="js-item-name" type="text" />
+            </label>
+            <label class="field">
+              <span>Weight</span>
+              <input class="js-item-weight" min="0" type="number" />
+            </label>
+            <label class="field">
+              <span>Score</span>
+              <input class="js-item-score" min="0" type="number" />
+            </label>
+            <label class="field">
+              <span>Max</span>
+              <input class="js-item-max" min="0" type="number" />
+            </label>
+            <label class="completed-toggle">
+              <input class="js-item-completed" type="checkbox" />
+              Done
+            </label>
+            <div class="contribution-pill">
+              <span class="assessment-label">Contrib.</span>
+              <strong class="js-item-contribution">${formatMark(
+                weightedContribution(item),
+              )}</strong>
+            </div>
+            <button class="icon-button js-delete-item" type="button" aria-label="Delete item">
+              X
+            </button>
+          `;
+
+          const nameInput = row.querySelector(".js-item-name");
+          const weightInput = row.querySelector(".js-item-weight");
+          const scoreInput = row.querySelector(".js-item-score");
+          const maxInput = row.querySelector(".js-item-max");
+          const completedInput = row.querySelector(".js-item-completed");
+          const deleteButton = row.querySelector(".js-delete-item");
+
+          nameInput.value = item.name;
+          weightInput.value = item.weight;
+          scoreInput.value = item.score;
+          maxInput.value = item.maxScore;
+          completedInput.checked = item.completed;
+          deleteButton.setAttribute("aria-label", `Delete ${item.name}`);
+
+          nameInput.addEventListener("input", (event) => {
+            updateAssessment(subject.id, item.id, { name: event.target.value });
+          });
+          weightInput.addEventListener("input", (event) => {
+            updateAssessment(subject.id, item.id, {
+              weight: numberFromInput(event.target.value),
+            });
+          });
+          scoreInput.addEventListener("input", (event) => {
+            updateAssessment(subject.id, item.id, {
+              score: numberFromInput(event.target.value),
+            });
+          });
+          maxInput.addEventListener("input", (event) => {
+            updateAssessment(subject.id, item.id, {
+              maxScore: numberFromInput(event.target.value),
+            });
+          });
+          completedInput.addEventListener("change", (event) => {
+            updateAssessment(subject.id, item.id, {
+              completed: event.target.checked,
+            });
+          });
+          deleteButton.addEventListener("click", () => {
+            const currentSubject = findSubject(subject.id);
+
+            if (!currentSubject) {
+              return;
+            }
+
+            currentSubject.assessments = currentSubject.assessments.filter(
+              (assessment) => assessment.id !== item.id,
+            );
+            saveAndRender();
+          });
+
+          list.append(row);
+        });
+      }
+
+      function renderSubjectSummary(subjectId) {
+        const subject = findSubject(subjectId);
+        const card = subjectCard(subjectId);
+
+        if (!subject || !card) {
+          return;
+        }
+
+        const totals = calculateSubjectTotals(subject);
+        const hasWeightWarning = Math.abs(totals.totalWeight - 100) > 0.01;
+
+        card.querySelector(".js-current-mark").textContent = `${formatMark(
+          totals.currentMark,
+        )}%`;
+        card.querySelector(".js-completed-weight").textContent = `${formatMark(
+          totals.completedWeight,
+        )}% done`;
+        card.querySelector(".js-completed-contribution").textContent = formatMark(
+          totals.completedMark,
+        );
+        card.querySelector(".js-final-mark").textContent = `${formatMark(
+          totals.finalMark,
+        )}%`;
+        card.querySelector(".js-required-average").textContent =
+          requiredAverageLabel(totals.required);
+        card.querySelector(".js-required-message").textContent =
+          totals.required.message;
+        card.querySelector(".js-total-weight").textContent = `${formatMark(
+          totals.totalWeight,
+        )}%`;
+        card.querySelector(".js-total-weight").classList.toggle(
+          "warning-text",
+          hasWeightWarning,
+        );
+        card.querySelector(".js-weight-message").textContent = hasWeightWarning
+          ? "Should total 100%."
+          : "Weights total 100%.";
+        card.querySelector(".js-remaining-weight").textContent = `${formatMark(
+          totals.remainingWeight,
+        )}%`;
+        renderSubjectTargetPresets(card, subject);
+      }
+
+      function renderAssessmentContribution(subjectId, assessmentId) {
+        const subject = findSubject(subjectId);
+        const item = subject?.assessments.find(
+          (assessment) => assessment.id === assessmentId,
+        );
+        const row = subjectCard(subjectId)?.querySelector(
+          `[data-assessment-id="${cssEscape(assessmentId)}"]`,
+        );
+
+        if (!item || !row) {
+          return;
+        }
+
+        row.querySelector(".js-item-contribution").textContent = formatMark(
+          weightedContribution(item),
+        );
+        row.querySelector(".js-delete-item").setAttribute(
+          "aria-label",
+          `Delete ${item.name}`,
+        );
+      }
+
+      function updateSubject(id, updates) {
+        state.subjects = state.subjects.map((subject) =>
+          subject.id === id ? { ...subject, ...updates } : subject,
+        );
+        saveState();
+
+        const subject = findSubject(id);
+        const card = subjectCard(id);
+        if (subject && card) {
+          card.querySelector(".js-duplicate-subject").setAttribute(
+            "aria-label",
+            `Duplicate ${subject.name}`,
+          );
+          card.querySelector(".js-delete-subject").setAttribute(
+            "aria-label",
+            `Delete ${subject.name}`,
+          );
+        }
+
+        renderSubjectSummary(id);
+        renderWamOverview();
+      }
+
+      function updateAssessment(subjectId, assessmentId, updates) {
+        const subject = findSubject(subjectId);
+        if (!subject) {
+          return;
+        }
+
+        subject.assessments = subject.assessments.map((item) =>
+          item.id === assessmentId ? { ...item, ...updates } : item,
+        );
+        saveState();
+        renderSubjectSummary(subjectId);
+        renderAssessmentContribution(subjectId, assessmentId);
+        renderWamOverview();
+      }
+
+      function addSubject() {
+        state.subjects.push({
+          id: createId(),
+          name: `Subject ${state.subjects.length + 1}`,
+          targetMark: 80,
+          creditPoints: 12.5,
+          assessments: cloneAssessments(defaultAssessments).map((item) => ({
+            ...item,
+            id: createId(),
+            score: item.completed ? item.score : 0,
+          })),
+        });
+        saveAndRender();
+        elements.subjectsTrack.scrollTo({
+          left: elements.subjectsTrack.scrollWidth,
+          behavior: "smooth",
+        });
+      }
+
+      function duplicateSubject(subjectId) {
+        const subject = findSubject(subjectId);
+        if (!subject) {
+          return;
+        }
+
+        state.subjects.push({
+          id: createId(),
+          name: `${subject.name || "Subject"} copy`,
+          targetMark: subject.targetMark,
+          creditPoints: subject.creditPoints,
+          assessments: subject.assessments.map((item) => ({
+            ...item,
+            id: createId(),
+          })),
+        });
+        saveAndRender();
+        elements.subjectsTrack.scrollTo({
+          left: elements.subjectsTrack.scrollWidth,
+          behavior: "smooth",
+        });
+      }
+
+      function exportData() {
+        const payload = JSON.stringify(state, null, 2);
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `wam-calculator-${new Date()
+          .toISOString()
+          .slice(0, 10)}.json`;
+        document.body.append(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function importData(event) {
+        const file = event.target.files?.[0];
+
+        if (!file) {
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+          try {
+            const importedState = JSON.parse(String(reader.result));
+            state = normalizeState(importedState);
+            saveAndRender();
+          } catch {
+            window.alert("Could not import that JSON file.");
+          } finally {
+            elements.importFile.value = "";
+          }
+        });
+        reader.readAsText(file);
+      }
+
+      function calculateWam() {
+        const currentWam = numericValue(state.wam.currentWam);
+        const completedSubjects = numericValue(state.wam.completedSubjects);
+        const completedCreditPoints = numericValue(
+          state.wam.completedCreditPoints,
+        );
+        const useCreditWeighting = Boolean(state.wam.useCreditWeighting);
+        const subjectTargets = state.subjects.map((subject) =>
+          numericValue(subject.targetMark),
+        );
+        const newSubjectCount = subjectTargets.length;
+        const newSubjectTotal = subjectTargets.reduce((sum, mark) => sum + mark, 0);
+        let averageNewMark =
+          newSubjectCount > 0 ? newSubjectTotal / newSubjectCount : 0;
+
+        let completedBase = completedSubjects;
+        let newSubjectBase = newSubjectCount;
+        let weightedSubjectTotal = newSubjectTotal;
+
+        if (useCreditWeighting) {
+          completedBase = completedCreditPoints;
+          newSubjectBase = state.subjects.reduce(
+            (sum, subject) => sum + numericValue(subject.creditPoints),
+            0,
+          );
+          weightedSubjectTotal = state.subjects.reduce(
+            (sum, subject) =>
+              sum +
+              numericValue(subject.targetMark) * numericValue(subject.creditPoints),
+            0,
+          );
+          averageNewMark =
+            newSubjectBase > 0 ? weightedSubjectTotal / newSubjectBase : 0;
+        }
+
+        const denominator = completedBase + newSubjectBase;
+        const newWam =
+          denominator > 0
+            ? (currentWam * completedBase + weightedSubjectTotal) / denominator
+            : 0;
+
+        return {
+          currentWam,
+          completedSubjects,
+          completedCreditPoints,
+          completedBase,
+          newSubjectCount,
+          averageNewMark,
+          newWam,
+          wamChange: newWam - currentWam,
+        };
+      }
+
+      function calculateSubjectTotals(subject) {
+        const completedMark = completedWeightedMark(subject.assessments);
+        const finalMark = finalSubjectMark(subject.assessments);
+
+        return {
+          totalWeight: totalWeight(subject.assessments),
+          completedWeight: completedWeight(subject.assessments),
+          remainingWeight: remainingWeight(subject.assessments),
+          completedMark,
+          currentMark: currentWeightedMark(subject.assessments),
+          finalMark,
+          required: requiredRemainingAverage(
+            subject.assessments,
+            numericValue(subject.targetMark),
+          ),
+        };
+      }
+
+      function weightedContribution(item) {
+        if (item.maxScore <= 0 || item.weight <= 0) {
+          return 0;
+        }
+
+        return (item.score / item.maxScore) * item.weight;
+      }
+
+      function totalWeight(items) {
+        return items.reduce((sum, item) => sum + numericValue(item.weight), 0);
+      }
+
+      function completedWeight(items) {
+        return items
+          .filter((item) => item.completed)
+          .reduce((sum, item) => sum + numericValue(item.weight), 0);
+      }
+
+      function remainingWeight(items) {
+        return items
+          .filter((item) => !item.completed)
+          .reduce((sum, item) => sum + numericValue(item.weight), 0);
+      }
+
+      function completedWeightedMark(items) {
+        return items
+          .filter((item) => item.completed)
+          .reduce((sum, item) => sum + weightedContribution(item), 0);
+      }
+
+      function currentWeightedMark(items) {
+        const weight = completedWeight(items);
+
+        if (weight <= 0) {
+          return 0;
+        }
+
+        return (completedWeightedMark(items) / weight) * 100;
+      }
+
+      function finalSubjectMark(items) {
+        return items.reduce((sum, item) => sum + weightedContribution(item), 0);
+      }
+
+      function requiredRemainingAverage(items, targetMark) {
+        const completedMark = completedWeightedMark(items);
+        const remaining = remainingWeight(items);
+
+        if (remaining <= 0) {
+          if (targetMark <= completedMark) {
+            return {
+              status: "achieved",
+              average: 0,
+              message: "Target already reached.",
+            };
+          }
+
+          return {
+            status: "not-achievable",
+            average: Number.POSITIVE_INFINITY,
+            message: "May need scaling.",
+          };
+        }
+
+        const average = ((targetMark - completedMark) / remaining) * 100;
+
+        if (average < 0) {
+          return {
+            status: "achieved",
+            average,
+            message: "Target already reached.",
+          };
+        }
+
+        if (average > 100) {
+          return {
+            status: "not-achievable",
+            average,
+            message: "May need scaling.",
+          };
+        }
+
+        return {
+          status: "needed",
+          average,
+          message: `${formatMark(average)}% needed.`,
+        };
+      }
+
+      function requiredAverageLabel(result) {
+        if (result.status === "needed") {
+          return `${formatMark(result.average)}%`;
+        }
+
+        if (result.status === "achieved") {
+          return "Achieved";
+        }
+
+        return "Not achievable";
+      }
+
+      function formatMark(value) {
+        if (!Number.isFinite(value)) {
+          return "infinity";
+        }
+
+        return new Intl.NumberFormat("en-AU", {
+          maximumFractionDigits: 1,
+          minimumFractionDigits: 0,
+        }).format(value);
+      }
+
+      function formatWam(value) {
+        if (!Number.isFinite(value)) {
+          return "infinity";
+        }
+
+        return new Intl.NumberFormat("en-AU", {
+          maximumFractionDigits: 2,
+          minimumFractionDigits: 2,
+        }).format(value);
+      }
+
+      function formatSignedWam(value) {
+        if (!Number.isFinite(value) || Math.abs(value) < 0.005) {
+          return "0.00";
+        }
+
+        const formatted = formatWam(Math.abs(value));
+        return value > 0 ? `+${formatted}` : `-${formatted}`;
+      }
+
+      function formatSignedMark(value) {
+        if (!Number.isFinite(value) || Math.abs(value) < 0.05) {
+          return "0";
+        }
+
+        const formatted = formatMark(Math.abs(value));
+        return value > 0 ? `+${formatted}` : `-${formatted}`;
+      }
+
+      function numberFromInput(value) {
+        const parsed = Number(value);
+        return Number.isFinite(parsed) ? parsed : 0;
+      }
+
+      function numericValue(value) {
+        return Number.isFinite(Number(value)) ? Number(value) : 0;
+      }
+
+      function saveAndRender() {
+        saveState();
+        render();
+      }
+
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function loadState() {
+        try {
+          const rawState = localStorage.getItem(STORAGE_KEY);
+
+          if (rawState) {
+            const parsed = JSON.parse(rawState);
+            return normalizeState(parsed);
+          }
+
+          const legacyState = loadLegacyState();
+          if (legacyState) {
+            return legacyState;
+          }
+
+          return createDefaultState();
+        } catch {
+          return createDefaultState();
+        }
+      }
+
+      function loadLegacyState() {
+        try {
+          const rawState = localStorage.getItem(LEGACY_STORAGE_KEY);
+
+          if (!rawState) {
+            return null;
+          }
+
+          const parsed = JSON.parse(rawState);
+
+          if (!Array.isArray(parsed.assessments)) {
+            return null;
+          }
+
+          return {
+            wam: {
+              currentWam: 75,
+              completedSubjects: 12,
+              completedCreditPoints: 150,
+              useCreditWeighting: false,
+            },
+            subjects: [
+              {
+                id: createId(),
+                name: "Saved subject",
+                targetMark: numericValue(parsed.targetMark) || 80,
+                creditPoints: 12.5,
+                assessments: parsed.assessments.map(normalizeAssessment),
+              },
+            ],
+          };
+        } catch {
+          return null;
+        }
+      }
+
+      function normalizeState(value) {
+        if (!value || typeof value !== "object") {
+          throw new Error("Invalid state");
+        }
+
+        const subjects = Array.isArray(value.subjects)
+          ? value.subjects.map(normalizeSubject)
+          : [];
+
+        return {
+          wam: {
+            currentWam: numericValue(value.wam?.currentWam),
+            completedSubjects: numericValue(value.wam?.completedSubjects),
+            completedCreditPoints:
+              numericValue(value.wam?.completedCreditPoints) ||
+              numericValue(value.wam?.completedSubjects) * 12.5,
+            useCreditWeighting: Boolean(value.wam?.useCreditWeighting),
+          },
+          subjects,
+        };
+      }
+
+      function normalizeSubject(subject, index) {
+        const assessments = Array.isArray(subject.assessments)
+          ? subject.assessments.map(normalizeAssessment)
+          : cloneAssessments(defaultAssessments);
+
+        return {
+          id: typeof subject.id === "string" ? subject.id : createId(),
+          name:
+            typeof subject.name === "string" && subject.name.trim()
+              ? subject.name
+              : `Subject ${index + 1}`,
+          targetMark: numericValue(subject.targetMark) || 80,
+          creditPoints: numericValue(subject.creditPoints) || 12.5,
+          assessments,
+        };
+      }
+
+      function normalizeAssessment(item, index) {
+        return {
+          id: typeof item.id === "string" ? item.id : createId(),
+          name:
+            typeof item.name === "string" && item.name.trim()
+              ? item.name
+              : `Assessment ${index + 1}`,
+          weight: numericValue(item.weight),
+          score: numericValue(item.score),
+          maxScore: numericValue(item.maxScore) || 100,
+          completed: Boolean(item.completed),
+        };
+      }
+
+      function createDefaultState() {
+        return {
+          wam: {
+            currentWam: 75,
+            completedSubjects: 12,
+            completedCreditPoints: 150,
+            useCreditWeighting: false,
+          },
+          subjects: defaultSubjects.map((subject) => ({
+            ...subject,
+            id: createId(),
+            assessments: cloneAssessments(subject.assessments).map((item) => ({
+              ...item,
+              id: createId(),
+            })),
+          })),
+        };
+      }
+
+      function cloneAssessments(items) {
+        return items.map((item) => ({ ...item }));
+      }
+
+      function findSubject(subjectId) {
+        return state.subjects.find((subject) => subject.id === subjectId);
+      }
+
+      function subjectCard(subjectId) {
+        return elements.subjectsTrack.querySelector(
+          `[data-subject-id="${cssEscape(subjectId)}"]`,
+        );
+      }
+
+      function createId() {
+        if (window.crypto && typeof window.crypto.randomUUID === "function") {
+          return window.crypto.randomUUID();
+        }
+
+        return `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      }
+
+      function cssEscape(value) {
+        if (window.CSS && typeof window.CSS.escape === "function") {
+          return window.CSS.escape(value);
+        }
+
+        return value.replace(/["\\]/g, "\\$&");
+      }
+    </script>
+  </body>
+</html>
